@@ -1,6 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-// import { sections } from '../data/products'; // Removed invalid import
 import { Heart, Calendar, Briefcase, Camera, Gift, Truck } from 'lucide-react';
 
 const Services = () => {
@@ -8,31 +8,37 @@ const Services = () => {
         {
             icon: <Heart size={32} />,
             title: "Wedding Florals",
+            slug: "wedding",
             description: "From the bridal bouquet to the reception centerpiece, we create cohesive floral designs that reflect your unique love story."
         },
         {
             icon: <Briefcase size={32} />,
             title: "Corporate Events",
+            slug: "corporate",
             description: "Impress clients and colleagues with sophisticated floral installations for galas, product launches, and office spaces."
         },
         {
             icon: <Calendar size={32} />,
             title: "Weekly Subscriptions",
+            slug: "subscription",
             description: "Keep your home or business blooming with fresh seasonal arrangements delivered to your door every week."
         },
         {
             icon: <Camera size={32} />,
             title: "Editorial & Shoots",
+            slug: "editorial",
             description: "Creative botanical styling for brand campaigns, magazine editorials, and photo sessions."
         },
         {
             icon: <Gift size={32} />,
             title: "Gift Concierge",
+            slug: "gift",
             description: "Personalized floral gifting service for birthdays, anniversaries, and special moments."
         },
         {
             icon: <Truck size={32} />,
             title: "Event Installation",
+            slug: "installation",
             description: "Full-scale floral production and on-site installation for immersive event experiences."
         }
     ];
@@ -72,7 +78,13 @@ const Services = () => {
                                 {service.icon}
                             </div>
                             <h3 className="text-2xl font-serif font-bold text-gray-900 mb-4">{service.title}</h3>
-                            <p className="text-gray-500 leading-relaxed">{service.description}</p>
+                            <p className="text-gray-500 leading-relaxed mb-6">{service.description}</p>
+                            <Link
+                                to={`/contact?service=${service.slug}`}
+                                className="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors"
+                            >
+                                Inquire Now →
+                            </Link>
                         </motion.div>
                     ))}
                 </div>
@@ -82,9 +94,12 @@ const Services = () => {
                     <div className="relative z-10">
                         <h2 className="text-3xl md:text-4xl font-serif font-bold mb-6">Ready to bring your vision to life?</h2>
                         <p className="text-secondary-200 mb-8 max-w-xl mx-auto">Book a consultation with our lead floral designer today.</p>
-                        <button className="px-8 py-3 bg-white text-secondary-900 rounded-full font-bold hover:bg-secondary-100 transition-colors">
+                        <Link
+                            to="/contact?service=consultation"
+                            className="inline-block px-8 py-3 bg-white text-secondary-900 rounded-full font-bold hover:bg-secondary-100 transition-colors"
+                        >
                             Book Consultation
-                        </button>
+                        </Link>
                     </div>
                     {/* Abstract Circle */}
                     <div className="absolute top-0 right-0 w-64 h-64 bg-secondary-800 rounded-full blur-3xl opacity-50 translate-x-1/2 -translate-y-1/2" />

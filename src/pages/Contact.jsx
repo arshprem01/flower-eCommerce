@@ -1,8 +1,54 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, CheckCircle } from 'lucide-react';
 
 const Contact = () => {
+    const [searchParams] = useSearchParams();
+    const serviceParam = searchParams.get('service');
+
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        service: '',
+        message: ''
+    });
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const services = [
+        { value: '', label: 'Select a service (optional)' },
+        { value: 'consultation', label: 'Book a Consultation' },
+        { value: 'wedding', label: 'Wedding Florals' },
+        { value: 'corporate', label: 'Corporate Events' },
+        { value: 'subscription', label: 'Weekly Subscriptions' },
+        { value: 'editorial', label: 'Editorial & Shoots' },
+        { value: 'gift', label: 'Gift Concierge' },
+        { value: 'installation', label: 'Event Installation' }
+    ];
+
+    useEffect(() => {
+        if (serviceParam) {
+            setFormData(prev => ({ ...prev, service: serviceParam }));
+        }
+    }, [serviceParam]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // In a real app, you would send this to a backend
+        console.log('Form submitted:', formData);
+        setIsSubmitted(true);
+        setTimeout(() => {
+            setIsSubmitted(false);
+            setFormData({ firstName: '', lastName: '', email: '', service: '', message: '' });
+        }, 3000);
+    };
+
     return (
         <div className="bg-floral-white min-h-screen py-20 px-4">
             <div className="container mx-auto">
@@ -51,30 +97,88 @@ const Contact = () => {
 
                     {/* Form Section */}
                     <div className="p-12">
-                        <form className="space-y-6">
-                            <div className="grid md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">First Name</label>
-                                    <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-500 outline-none" placeholder="Jane" />
+                        {isSubmitted ? (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="h-full flex flex-col items-center justify-center text-center"
+                            >
+                                <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
+                                <h3 className="text-2xl font-bold text-gray-900 mb-2">Message Sent!</h3>
+                                <p className="text-gray-500">We'll get back to you within 24 hours.</p>
+                            </motion.div>
+                        ) : (
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-700">First Name</label>
+                                        <input
+                                            type="text"
+                                            name="firstName"
+                                            value={formData.firstName}
+                                            onChange={handleChange}
+                                            required
+                                            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-500 outline-none"
+                                            placeholder="Jane"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-700">Last Name</label>
+                                        <input
+                                            type="text"
+                                            name="lastName"
+                                            value={formData.lastName}
+                                            onChange={handleChange}
+                                            required
+                                            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-500 outline-none"
+                                            placeholder="Doe"
+                                        />
+                                    </div>
                                 </div>
+
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">Last Name</label>
-                                    <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-500 outline-none" placeholder="Doe" />
+                                    <label className="text-sm font-medium text-gray-700">Email</label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        required
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-500 outline-none"
+                                        placeholder="jane@example.com"
+                                    />
                                 </div>
-                            </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">Email</label>
-                                <input type="email" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-500 outline-none" placeholder="jane@example.com" />
-                            </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-gray-700">Service Interest</label>
+                                    <select
+                                        name="service"
+                                        value={formData.service}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-500 outline-none"
+                                    >
+                                        {services.map(s => (
+                                            <option key={s.value} value={s.value}>{s.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">Message</label>
-                                <textarea rows="4" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-500 outline-none" placeholder="Tell us what you need..." ></textarea>
-                            </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-gray-700">Message</label>
+                                    <textarea
+                                        name="message"
+                                        value={formData.message}
+                                        onChange={handleChange}
+                                        required
+                                        rows="4"
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-500 outline-none"
+                                        placeholder="Tell us what you need..."
+                                    />
+                                </div>
 
-                            <button type="button" className="w-full btn-primary py-4">Send Message</button>
-                        </form>
+                                <button type="submit" className="w-full btn-primary py-4">Send Message</button>
+                            </form>
+                        )}
                     </div>
                 </div>
             </div>
